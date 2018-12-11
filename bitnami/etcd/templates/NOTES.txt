@@ -4,7 +4,7 @@
  WARNING
 
     By specifying "service.type=LoadBalancer" and "allowNoneAuthentication=true" you
-    have most likely exposed the Redis service externally without any authentication
+    have most likely exposed the etcd service externally without any authentication
     mechanism.
 
     For security reasons, we strongly suggest that you switch to "ClusterIP" or
@@ -24,12 +24,12 @@ etcd can be accessed via port {{ .Values.service.port }} on the following DNS na
 To set a key run the following command:
 
     export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "etcd.name" . }}" -o jsonpath="{.items[0].metadata.name}")
-    kubectl exec -it $POD_NAME -- etcdctl set /message Hello
+    kubectl exec --namespace {{ .Release.Namespace }} -it $POD_NAME -- etcdctl set /message Hello
 
 To get a key run the following command:
 
     export POD_NAME=$(kubectl get pods --namespace {{ .Release.Namespace }} -l "app={{ template "etcd.name" . }}" -o jsonpath="{.items[0].metadata.name}")
-    kubectl exec -it $POD_NAME -- etcdctl get /message
+    kubectl exec --namespace {{ .Release.Namespace }} -it $POD_NAME -n {{ .Release.Namespace }} -- etcdctl get /message
 
 To connect to your etcd server from outside the cluster execute the following commands:
 
